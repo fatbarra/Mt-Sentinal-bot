@@ -35,3 +35,5 @@ seen (Mc Username) - sends back when the player was last online on 2b2t
 bible (passage) - reterns a bible passage
   
 The () is where you insert something make sure not to put them into the command
+
+You gain currentcy by leveling up in there server by typing
