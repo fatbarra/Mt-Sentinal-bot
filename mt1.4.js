@@ -943,4 +943,4 @@ client.on('message', async message => {
 
 });
 
-client.login('NzE1MzIxMzAzNzI0NDU4MDU3.XtA8Cg.4-DJsfegzw2rYG-ywLEkt_Ivi2E');
+client.login('');
