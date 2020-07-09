@@ -38,4 +38,4 @@ The () is where you insert something make sure not to put them into the command
 
 You gain currentcy by leveling up in there server by typing
 
-![alt text](https://drive.google.com/file/d/1c2OXBbgw3bsaS0LQSqaksEW8graCPxv6/view)
+![alt text](https://i.ibb.co/19ksSNv/t.png)
