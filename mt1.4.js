@@ -167,13 +167,28 @@ client.on("message", message =>{
         console.log (message.guild.roles);
     }
 
+
     if (message.content.includes('discord.gg/'||'discordapp.com/invite/')) { //if it contains an invite link
         message.delete() //delete the message
         //message.channel.send('Link Deleted:\n**Invite links are not permitted on this server**')
         const embed = new Discord.MessageEmbed();
 
         embed.setColor('#bf241f')
-        embed.setTitle("Link Deleted:\n**Invite links are not permitted on this server**" +  message.author.username )
+        embed.setTitle("Link Deleted:\n**Invite links are not permitted on this server**")
+        embed.setAuthor(client.user.username ,client.user.displayAvatarURL({format: "png", dynamic: true}));
+        //embed.setFooter("This Bot Was Created by Madmegsox", "https://i.ya-webdesign.com/images/christian-vector-crusader-cross-17.png")
+        
+
+        message.channel.send({embed});
+    }
+
+    if (message.content.includes('discord.gg/'||'discordapp.com/invite/')) { //if it contains an invite link
+        message.delete() //delete the message
+        //message.channel.send('Link Deleted:\n**Invite links are not permitted on this server**')
+        const embed = new Discord.MessageEmbed();
+
+        embed.setColor('#bf241f')
+        embed.setTitle("Link Deleted:\n**Invite links are not permitted on this server**")
         embed.setAuthor(client.user.username ,client.user.displayAvatarURL({format: "png", dynamic: true}));
         //embed.setFooter("This Bot Was Created by Madmegsox", "https://i.ya-webdesign.com/images/christian-vector-crusader-cross-17.png")
         
@@ -191,7 +206,7 @@ client.on("message", message =>{
             const embed = new Discord.MessageEmbed();
 
             embed.setColor('#bf241f')
-            embed.setTitle("Link Deleted:\n**Youtube Channel links are not permitted on this server**" +  message.author.username )
+            embed.setTitle("Link Deleted:\n**Youtube Channel links are not permitted on this server**")
             embed.setAuthor(client.user.username ,client.user.displayAvatarURL({format: "png", dynamic: true}));
             //embed.setFooter("This Bot Was Created by Madmegsox", "https://i.ya-webdesign.com/images/christian-vector-crusader-cross-17.png")
             
@@ -210,7 +225,7 @@ client.on("message", message =>{
             const embed = new Discord.MessageEmbed();
 
             embed.setColor('#bf241f')
-            embed.setTitle("Link Deleted:\n**Twitch links are not permitted on this server**" +  message.author.username )
+            embed.setTitle("Link Deleted:\n**Twitch links are not permitted on this server**")
             embed.setAuthor(client.user.username ,client.user.displayAvatarURL({format: "png", dynamic: true}));
             //embed.setFooter("This Bot Was Created by Madmegsox", "https://i.ya-webdesign.com/images/christian-vector-crusader-cross-17.png")
             
@@ -226,7 +241,7 @@ client.on("message", message =>{
             const embed = new Discord.MessageEmbed();
 
             embed.setColor('#bf241f')
-            embed.setTitle("Link Deleted:\n**Youtube links are not permitted on this server**" +  message.author.username )
+            embed.setTitle("Link Deleted:\n**Youtube links are not permitted on this server**")
             embed.setAuthor(client.user.username ,client.user.displayAvatarURL({format: "png", dynamic: true}));
             //embed.setFooter("This Bot Was Created by Madmegsox", "https://i.ya-webdesign.com/images/christian-vector-crusader-cross-17.png")
             
@@ -545,7 +560,7 @@ client.on('message', async message => {
         
     }
     else if (command === "server-info") {
-        //message.channel.send("Server name: " + message.guild.name + "\nNumber of members: " + message.guild.memberCount);
+        message.channel.send("Server name: " + message.guild.name + "\nNumber of members: " + message.guild.memberCount);
         const embed = new Discord.MessageEmbed();
 
         embed.setColor('#b81fa1')
@@ -928,4 +943,4 @@ client.on('message', async message => {
 
 });
 
-client.login('');
+client.login('NzE1MzIxMzAzNzI0NDU4MDU3.XtA8Cg.4-DJsfegzw2rYG-ywLEkt_Ivi2E');
