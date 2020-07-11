@@ -6,10 +6,13 @@ const axios = require("axios");
 
 
 
+
+
 var prefix = "?";
 
 client.once('ready', () => {
     console.log('Ready!');
+    client.user.setActivity("Fit Mc - ?help", { type: 'WATCHING' })
     
 });
 
@@ -21,16 +24,46 @@ if (fs.existsSync("stats.json")){
 
 
 
+let stats1 = {
+    serverID: "714148539592343635",
+    total: "731286547810222083",
+    online: "731286742711271476",
+    new: "731293435377483777",
+    trusted: "731294457135235113",
+    yt: "731294823176339597"
+
+};
+
+
+
+
+
 client.on("guildMemberAdd", function(member){
     //message.channel.send("Welcome " + member.username + "\n Are player count is now:" + message.guild.memberCount);
     //member.send("Hello Welcome To Mount Sentinal.")
+
+    if (member.guild.id !== stats1.serverID){return;}
+
+    const total2 = member.guild.memberCount
+    const online2 = member.guild.members.cache.filter(m => m.presence.status === 'online').size
+    const new2 = member.guild.roles.cache.get("714149303433822250").members.size;
+    const trusted2 = member.guild.roles.cache.get("714149762450063390").members.size;
+    const yt2 = member.guild.roles.cache.get("726107624826994718").members.size;
+
+
+    client.channels.cache.get(stats1.total).setName("📊TOTAL USERS: " + total2);
+    client.channels.cache.get(stats1.online).setName("📊ONLINE USERS: " + online2);
+    client.channels.cache.get(stats1.new).setName("📊NEW COMERS: " + new2);
+    client.channels.cache.get(stats1.trusted).setName("📊TRUSTED PLAYERS: " + trusted2);
+    client.channels.cache.get(stats1.yt).setName("📊YOUTUBE SUBS: " + yt2);
+
 
     const embed = new Discord.MessageEmbed();
 
     embed.setColor('#b81fa1')
     embed.setTitle("Welcome to Mount Centinal")
     embed.setAuthor(client.user.username ,client.user.displayAvatarURL({format: "png", dynamic: true}));
-    embed.setDescription("Hello Thanks for joining!\n Make sure to read #rules\n also to use me do ?help\nAre player count is now: " + member.guild.memberCount);
+    embed.setDescription("Hello Thanks for joining!\n Make sure to read #rules\nAre player count is now: " + member.guild.memberCount);
     embed.setFooter("This Bot Was Created by Madmegsox", "https://i.ya-webdesign.com/images/christian-vector-crusader-cross-17.png")
 
     
@@ -46,6 +79,39 @@ client.on("guildMemberAdd", function(member){
 });
 
 
+client.on("guildMemberRemove", function (member){
+    if (member.guild.id !== stats1.serverID){return;}
+
+    const total2 = member.guild.memberCount
+    const online2 = member.guild.members.cache.filter(m => m.presence.status === 'online').size
+    const new2 = member.guild.roles.cache.get("714149303433822250").members.size;
+    const trusted2 = member.guild.roles.cache.get("714149762450063390").members.size;
+    const yt2 = member.guild.roles.cache.get("726107624826994718").members.size;
+
+
+    client.channels.cache.get(stats1.total).setName("📊TOTAL USERS: " + total2);
+    client.channels.cache.get(stats1.online).setName("📊ONLINE USERS: " + online2);
+    client.channels.cache.get(stats1.new).setName("📊NEW COMERS: " + new2);
+    client.channels.cache.get(stats1.trusted).setName("📊TRUSTED PLAYERS: " + trusted2);
+    client.channels.cache.get(stats1.yt).setName("📊YOUTUBE SUBS: " + yt2);
+
+    const embed = new Discord.MessageEmbed();
+
+    embed.setColor('#b81fa1')
+    embed.setTitle("We are sad to see you go!")
+    embed.setAuthor(client.user.username ,client.user.displayAvatarURL({format: "png", dynamic: true}));
+    embed.setDescription("If you ever what to rejoin dm me at Madmegsox#2526");
+    embed.setFooter("This Bot Was Created by Madmegsox", "https://i.ya-webdesign.com/images/christian-vector-crusader-cross-17.png")
+
+    
+
+    member.send({embed}).catch(console.error);
+
+
+
+
+});
+
 
 
 client.on("message", message =>{
@@ -59,43 +125,64 @@ client.on("message", message =>{
         return;
     }
 
-    if (message.guild.id in stats === false) {
-        stats[message.guild.id] = {};
+    process.on('unhandledRejection', error => console.log('unhandledRejection'));
+
+
+    if (message.guild === null){
+        const embed = new Discord.MessageEmbed();
+
+        embed.setColor('#b81fa1')
+        embed.setTitle("Hello " + message.author.username + " You cant use this bot in dm's")
+        embed.setAuthor(client.user.username ,client.user.displayAvatarURL({format: "png", dynamic: true}));
+        embed.setFooter("This Bot Was Created by Madmegsox", "https://i.ya-webdesign.com/images/christian-vector-crusader-cross-17.png")
+        
+
+        message.channel.send({embed});
+
     }
 
-    const guildStats = stats[message.guild.id];
-
-    if (message.author.id in guildStats === false) {
-        guildStats[message.author.id] = {
-            xp: 0,
-            level: 0,
-            last_msg: 0,
-            bal: 0
-        };
-    }
-
-
-    const user_stats = guildStats[message.author.id];
-
-    if (Date.now() - user_stats.last_msg > 60000){
-
-        user_stats.xp += Math.floor(Math.random() * 15) + 5;
-
-        user_stats.last_msg = Date.now();
-
-        const NextLevel = 5 * Math.pow(user_stats.level, 2) + 50 * user_stats.level + 100;
-
-        if (user_stats.xp >= NextLevel){
-            user_stats.level++;
-            user_stats.xp = user_stats.xp - NextLevel;
-            user_stats.bal += Math.floor(Math.random() * 5) + 1;
-            jsonfile.writeFileSync("stats.json", stats);
-            message.channel.send(message.author.username + " Has Reached level " + user_stats.level + " Welldone!")
+    else {
+        if (message.guild.id in stats === false) {
+            stats[message.guild.id] = {};
         }
 
-        jsonfile.writeFileSync("stats.json", stats);
+
+        const guildStats = stats[message.guild.id];
 
 
+        if (message.author.id in guildStats === false) {
+            guildStats[message.author.id] = {
+                xp: 0,
+                level: 0,
+                last_msg: 0,
+                bal: 0
+            };
+        }
+
+
+
+        const user_stats = guildStats[message.author.id];
+
+        if (Date.now() - user_stats.last_msg > 60000){
+
+            user_stats.xp += Math.floor(Math.random() * 15) + 5;
+
+            user_stats.last_msg = Date.now();
+
+            const NextLevel = 5 * Math.pow(user_stats.level, 2) + 50 * user_stats.level + 100;
+
+            if (user_stats.xp >= NextLevel){
+                user_stats.level++;
+                user_stats.xp = user_stats.xp - NextLevel;
+                user_stats.bal += Math.floor(Math.random() * 5) + 1;
+                jsonfile.writeFileSync("stats.json", stats);
+                message.channel.send(message.author.username + " Has Reached level " + user_stats.level + " Welldone!")
+            }
+
+            jsonfile.writeFileSync("stats.json", stats);
+
+
+        }
     }
 
     if (message.content ==="Hi Bot") {
@@ -165,6 +252,7 @@ client.on("message", message =>{
     }
     if (message.content === "?debug"){
         console.log (message.guild.roles);
+
     }
 
     if (message.content.includes('discord.gg/'||'discordapp.com/invite/')) { //if it contains an invite link
@@ -219,7 +307,7 @@ client.on("message", message =>{
         }
     }
 
-    if (message.content.includes('www.youtube.com/channel/')) { //if it contains an invite link
+    if (message.content.includes('www.youtube.com/watch')) { //if it contains an invite link
         if (message.author.id === "707287691783569518"){
             message.delete() //delete the message
             //message.channel.send('Link Deleted:\n**Invite links are not permitted on this server**')
@@ -238,6 +326,27 @@ client.on("message", message =>{
         }
     }
 
+
+    const words = ["4r5e", "5h1t", "5hit", "a55", "anal", "anus", "ar5e", "arrse", "arse", "ass", "ass-fucker", "asses", "assfucker", "assfukka", "asshole", "assholes", "asswhole", "a_s_s", "b!tch", "b00bs", "b17ch", "b1tch", "ballbag", "balls", "ballsack", "bastard", "beastial", "beastiality", "bellend", "bestial", "bestiality", "bi+ch", "biatch", "bitch", "bitcher", "bitchers", "bitches", "bitchin", "bitching", "blow job", "blowjob", "blowjobs", "boiolas", "bollock", "bollok", "boner", "boob", "boobs", "booobs", "boooobs", "booooobs", "booooooobs", "breasts", "buceta", "bunny fucker", "butthole", "buttmuch", "buttplug", "c0ck", "c0cksucker", "carpet muncher", "cawk", "chink", "cipa", "cl1t", "clit", "clitoris", "clits", "cnut", "cock", "cock-sucker", "cockface", "cockhead", "cockmunch", "cockmuncher", "cocks", "cocksuck", "cocksucked", "cocksucker", "cocksucking", "cocksucks", "cocksuka", "cocksukka", "cok", "cokmuncher", "coksucka", "cox", "crap", "cum", "cummer", "cumming", "cums", "cumshot", "cunilingus", "cunillingus", "cunnilingus", "cunt", "cuntlick", "cuntlicker", "cuntlicking", "cunts", "cyalis", "cyberfuc", "cyberfuck", "cyberfucked", "cyberfucker", "cyberfuckers", "cyberfucking", "d1ck", "dick", "dickhead", "dildo", "dildos", "dink", "dinks", "dirsa", "dlck", "dog-fucker", "doggin", "dogging", "donkeyribber", "duche", "dyke", "ejaculate", "ejaculated", "ejaculates", "ejaculating", "ejaculatings", "ejaculation", "ejakulate", "f u c k", "f u c k e r", "f4nny", "fagging", "faggitt", "faggot", "faggs", "fagot", "fagots", "fanny", "fannyflaps", "fannyfucker", "fanyy", "fatass", "fcuk", "fcuker", "fcuking", "feck", "fecker", "felching", "fellate", "fellatio", "fingerfuck", "fingerfucked", "fingerfucker", "fingerfuckers", "fingerfucking", "fingerfucks", "fistfuck", "fistfucked", "fistfucker", "fistfuckers", "fistfucking", "fistfuckings", "fistfucks", "flange", "fook", "fooker", "fuck", "fucka", "fucked", "fucker", "fuckers", "fuckhead", "fuckheads", "fuckin", "fucking", "fuckings", "fuckingshitmotherfucker", "fuckme", "fucks", "fuckwhit", "fuckwit", "fudge packer", "fudgepacker", "fuk", "fuker", "fukker", "fukkin", "fuks", "fukwhit", "fukwit", "fux", "fux0r", "f_u_c_k", "gangbang", "gangbanged", "gangbangs", "gay", "gaylord", "gaysex", "goatse", "god-dam", "god-damned", "goddamn", "goddamned", "hardcoresex", "heshe", "hoar", "hoare", "hoer", "homo", "hore", "horniest", "horny", "hotsex", "jack-off", "jackoff", "jap", "jerk-off", "jism", "jiz", "jizm", "jizz", "jew", "kawk", "knob", "knobead", "knobed", "knobend", "knobhead", "knobjocky", "knobjokey", "kock", "kondum", "kondums", "kum", "kummer", "kumming", "kums", "kunilingus", "l3i+ch", "l3itch", "labia", "lusting", "m0f0", "m0fo", "m45terbate", "ma5terb8", "ma5terbate", "masochist", "master-bate", "masterb8", "masterbat*", "masterbat3", "masterbate", "masterbation", "masterbations", "masturbate", "mo-fo", "mof0", "mofo", "mothafuck", "mothafucka", "mothafuckas", "mothafuckaz", "mothafucked", "mothafucker", "mothafuckers", "mothafuckin", "mothafucking", "mothafuckings", "mothafucks", "mother fucker", "motherfuck", "motherfucked", "motherfucker", "motherfuckers", "motherfuckin", "motherfucking", "motherfuckings", "motherfuckka", "motherfucks", "muff", "mutha", "muthafecker", "muthafuckker", "muther", "mutherfucker", "n1gga", "n1gger", "nazi", "nigg3r", "nigg4h", "nigga", "niggah", "niggas", "niggaz", "nigger", "niggers", "nob", "nob jokey", "nobhead", "nobjocky", "nobjokey", "numbnuts", "nutsack", "orgasim", "orgasims", "orgasm", "orgasms", "p0rn", "pawn", "pecker", "penis", "penisfucker", "phonesex", "phuck", "phuk", "phuked", "phuking", "phukked", "phukking", "phuks", "phuq", "pigfucker", "pimpis", "piss", "pissed", "pisser", "pissers", "pisses", "pissflaps", "pissin", "pissing", "pissoff", "poop", "porn", "porno", "pornography", "pornos", "prick", "pricks", "pron", "pube", "pusse", "pussi", "pussies", "pussy", "pussys", "rectum", "retard", "rimjaw", "rimming", "s hit", "s.o.b.", "sadist", "schlong", "screwing", "scroat", "scrote", "scrotum", "semen", "sex", "sh!+", "sh!t", "sh1t", "shag", "shagger", "shaggin", "shagging", "shemale", "shi+", "shit", "shitdick", "shite", "shited", "shitey", "shitfuck", "shitfull", "shithead", "shiting", "shitings", "shits", "shitted", "shitter", "shitters", "shitting", "shittings", "shitty", "skank", "slut", "sluts", "smegma", "smut", "snatch", "son-of-a-bitch", "spac", "spunk", "s_h_i_t", "t1tt1e5", "t1tties", "teets", "teez", "testical", "testicle", "tit", "titfuck", "tits", "titt", "tittie5", "tittiefucker", "titties", "tittyfuck", "tittywank", "titwank", "tosser", "turd", "tw4t", "twat", "twathead", "twatty", "twunt", "twunter", "v14gra", "v1gra", "vagina", "viagra", "vulva", "w00se", "wang", "wank", "wanker", "wanky", "whoar", "whore", "willies", "willy", "xrated", "xxx", "hitler"];
+
+    const blocked = words.filter(word => message.content.toLowerCase().includes(word));
+
+    if (blocked.length > 0) {
+      console.log(`${message.author.tag} tried to use profanity.`);
+      const embed = new Discord.MessageEmbed();
+
+      embed.setColor('#bf241f')
+      embed.setTitle("PROFANITY DETECTED\n***This is a warning " +  message.author.username + "***")
+      embed.setAuthor(client.user.username ,client.user.displayAvatarURL({format: "png", dynamic: true}));
+      //embed.setFooter("This Bot Was Created by Madmegsox", "https://i.ya-webdesign.com/images/christian-vector-crusader-cross-17.png")
+      message.channel.send({embed});
+
+
+      return message.delete()
+        .catch(console.error);
+    }
+
+    
 
 });
 
@@ -923,8 +1032,12 @@ client.on('message', async message => {
         
     }
 
+   
+
+
 
 
 
 });
 
+client.login('');
